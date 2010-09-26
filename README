@@ -1,0 +1,7 @@
+#description
+syntax highlighting for the GAMS programming language
+ 
+#install details
+1. put gams.vim in the syntax directory 
+2. associate .gms files with the highlighting by adding the following line to your filetype.vim: 
+au BufNewFile,BufRead *.gms	 setf gams
