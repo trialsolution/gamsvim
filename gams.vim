@@ -12,41 +12,70 @@ endif
 " gams is not case sensitive
 syn case ignore
 
+
+" KEYWORDS
+
 " for model definition and solve 
-syn keyword gamsStatement       Sets Set 
+" gams statements defined as regions below: set, parameter, model, equation
 syn keyword gamsStatement       Table 
-syn keyword gamsStatement       Parameter parameters
-syn keyword gamsStatement       Model 
-syn keyword gamsStatement       Solve 
-syn keyword gamsStatement       Equations Equation 
+syn keyword gamsStatement       Solve using
 syn keyword gamsStatement       Variable Variables 
 syn keyword gamsStatement       display 
 syn keyword gamsStatement       option 
 syn keyword gamsStatement       Alias 
 syn keyword gamsStatement       Scalar 
-syn keyword gamsStatement       sameas
+syn keyword gamsStatement       sameas abort 
+syn keyword gamsStatement	free semicont semiint sos1 sos2 binary integer
+syn keyword gamsStatement	positive negative
 syn keyword gamsStatement       xxpto
-" equation definitions ending with two dots?
 
-" additional stuff  
-syn keyword gamsStatement	free 
-syn keyword gamsStatement	positive 
-syn keyword gamsStatement       put file putclose abort
-syn keyword gamsRepeat          loop while repeat until
-syn keyword gamsConditional     if else Elseif ifi exist
+
+" model types
+syn keyword gamsStatement       lp mip nlp mcp mpec cns dnlp minlp qcp
+syn keyword gamsStatement       miqcp rmip rminlp rmiqcp 
+
+" external utilities  
+syn keyword gamsStatement       put file putclose putpage puttl puthd
+
+" control structures and logical operators 
+syn keyword gamsConditional     if else Elseif ifi exist IFE
 syn keyword gamsConditional     ne ge le eq gt lt
+syn keyword gamsRepeat          loop while repeat until
 syn keyword gamsRepeat          for to Downto By 
+" logical and math operators
+syn match gamsMathsOperator "-\|=\|[:+^/\\]"
+syn match gamsMathsOperator "\A\(AND\|OR\|XOR\|NOT\)\A"hs=s+1,he=e-1
 
+" math and statistical functions
+syntax keyword gamsFunction      ABS ASC sigmoid sum
+syntax keyword gamsFunction      acos acosh asin asinh atan atan2
+syntax keyword gamsFunction      atanh ceil ctime cos cosh exp floor log log10
+syntax keyword gamsFunction      max min precision round sin sinh sqrt tan tanh sqr
+syntax keyword gamsFunction      time trunc div
+syntax keyword gamsFunction      beta betareg binomial edist entropy errorf fact
+syntax keyword gamsFunction      gamma gammareg logbeta loggamma normal
+syntax keyword gamsFunction      mapval mod ncpcm ncpf pi poly power
+syntax keyword gamsFunction      sign trunc uniform uniformint
+
+" execution time gdx commands
+syn keyword gamsSpecial execute_load execute_unload
+
+
+
+" usually dollar commands are put to the first position within the line
+" but if there is an $if[ie] command before...
 syn match gamsSpecial "\$option" 
 syn match gamsSpecial "\$call"
 syn match gamsSpecial "\$eval"
+syn match gamsSpecial "\$evalglobal"
+syn match gamsSpecial "\$evallocal"
 
 syn match gamsSpecial "\$if"
 syn match gamsSpecial "\$ifi"
 syn match gamsSpecial "\$endif"
 syn match gamsSpecial "\$endifi"
 syn match gamsSpecial "\$iftheni"
-syn match gamsSpecial "\$iftheni"
+syn match gamsSpecial "\$ifthene"
 
 syn match gamsSpecial "\$gdxin"
 syn match gamsSpecial "\$gdxout"
@@ -158,39 +187,100 @@ syn match gamsSpecial "\$abort"
 syn match gamsSpecial "\$terminate"
 syn match gamsSpecial "\$stop"
 
-syn keyword gamsSpecial execute_load execute_unload
 
 syn match gamsSpecial "\$("he=e-1
 
 
-syntax keyword gamsFunction     ABS ASC sigmoid  
-syntax keyword gamsFunction      acos acosh asin asinh atan atan2
-syntax keyword gamsFunction      atanh ceil ctime cos cosh exp floor log log10
-syntax keyword gamsFunction      max min precision round sin sinh sqrt tan tanh sqr
-syntax keyword gamsFunction      time trunc div
-syntax keyword gamsFunction      beta betareg binomial edist entropy errorf fact
-syntax keyword gamsFunction      gamma gammareg logbeta loggamma normal
-syntax keyword gamsFunction      mapval mod ncpcm ncpf pi poly power
-syntax keyword gamsFunction      sign trunc uniform uniformint
 
-syntax keyword gamsTodo contained       TODO
-
-" hihglight every word starting with a dollar sign in the beggining of the line
+" uncomment to hihglight every word starting with a dollar sign in the beggining of the line
 "syn match gamsSpecial           "^\$\<[^ ]\+\>"
 
-"integer number, or floating point number without a dot.
-syn match  gamsNumber           "\<\d\+\>"
-"floating point number, with dot
-syn match  gamsNumber           "\<\d\+\.\d*\>"
-"floating point number, starting with a dot
-syn match  gamsNumber           "\.\d\+\>"
 
 "integer number, or floating point number without a dot.
+"use the special boundary symbols \< and \>
 syn match  gamsNumber           "\<\d\+\>"
+syn match  gamsNumber           "\<[-+]\d\+\>"
 "floating point number, with dot
 syn match  gamsNumber           "\<\d\+\.\d*\>"
+syn match  gamsNumber           "\<[-+]\d\+\.\d*\>"
 "floating point number, starting with a dot
-syn match  gamsNumber           "\.\d\+\>"
+syn match  gamsNumber           "\<\.\d\+\>"
+syn match  gamsNumber           "\<[-+]\.\d\+\>"
+" scientific notation (with exponent)? 
+" Floating point like number with E and decimal point (+,-)
+syn match gamsNumber '\<[-+]\=\d[[:digit:]]*\.\d*[eE][\-+]\=\d\+\>'
+syn match gamsNumber '\<\d[[:digit:]]*\.\d*[eE][\-+]\=\d\+\>'
+
+" special numbers
+syn keyword gamsNumber eps na undf
+syn match gamsNumber "[-+]inf" 
+
+
+
+" GAMS comments (see REGIONS section as well)
+" switch on for end of line comments 
+" syn match   gamsComment         "#.*$"
+
+" TODO and FIXME are special keywords in comments
+syntax keyword gamsTodo contained       TODO FIXME
+syntax match gamsComment       "^\*.*" contains=gamsTodo
+" GAMS comment regions 
+syntax region  gamsComment         start="^\$ontext" end="^\$offtext"
+
+
+" suffixes -- all from Henry
+	syn match gamsSuffix /\.pc/
+	syn match gamsSuffix /\.ps/
+	syn match gamsSuffix /\.pw/
+	syn match gamsSuffix /\.tm/
+	syn match gamsSuffix /\.bm/
+	syn match gamsSuffix /\.case/
+	syn match gamsSuffix /\.data/
+	syn match gamsSuffix /\.ifile/
+	syn match gamsSuffix /\.ofile/
+	syn match gamsSuffix /\.page/
+	syn match gamsSuffix /\.rdate/
+	syn match gamsSuffix /\.rfile/
+	syn match gamsSuffix /\.rtime/
+	syn match gamsSuffix /\.sfile/
+	syn match gamsSuffix /\.time/
+	syn match gamsSuffix /\.title/
+	syn match gamsSuffix /\.ts/
+	syn match gamsSuffix /\.tl/
+	syn match gamsSuffix /\.te/
+	syn match gamsSuffix /\.tf/
+	syn match gamsSuffix /\.l/
+	syn match gamsSuffix /\.lo/
+	syn match gamsSuffix /\.m/
+	syn match gamsSuffix /\.fx/
+	syn match gamsSuffix /\.prior/
+	syn match gamsSuffix /\.scale/
+	syn match gamsSuffix /\.up/
+	syn match gamsSuffix /\.lj/
+	syn match gamsSuffix /\.nj/
+	syn match gamsSuffix /\.sj/
+	syn match gamsSuffix /\.tj/
+	syn match gamsSuffix /\.lw/
+	syn match gamsSuffix /\.nw/
+	syn match gamsSuffix /\.sw/
+	syn match gamsSuffix /\.tw/
+	syn match gamsSuffix /\.nd/
+	syn match gamsSuffix /\.nr/
+	syn match gamsSuffix /\.nz/
+	syn match gamsSuffix /\.cc/
+	syn match gamsSuffix /\.hdcc/
+	syn match gamsSuffix /\.tlcc/
+	syn match gamsSuffix /\.cr/
+	syn match gamsSuffix /\.hdcr/
+	syn match gamsSuffix /\.tlcr/
+	syn match gamsSuffix /\.ll/
+	syn match gamsSuffix /\.hdll/
+	syn match gamsSuffix /\.tlll/
+	syn match gamsSuffix /\.lp/
+	syn match gamsSuffix /\.ws/
+	syn match gamsSuffix /\.errors/
+
+
 
 " String and Character contstants
 syn region  gamsString            start=+"+  skip=+\\\\\|\\"+  end=+"+
@@ -198,32 +288,47 @@ syn region  gamsString            start=+"+  skip=+\\\\\|\\"+  end=+"+
 syn region  gamsString            start=+'+  skip=+\\\\\|\\"+  end=+'+
 
 
-" GAMS comments:
-" switch on for end of line comments 
-" syn match   gamsComment         "#.*$"
 
-syntax match gamsComment       "^\*.*"
-"syn match gamsComment "^/star.*$"
-"syn region gamsComment start="^\*" end="^\*" 
-
-syntax region  gamsComment         start="^\$ontext" end="^\$offtext"
-" would highlight and/or everywhere
-" syn match   gamsMathsOperator   "-\|=\|[:<>+\*^/\\]\|AND\|OR"
-syn match gamsMathsOperator "-\|=\|[:+^/\\]"
-syn match gamsMathsOperator "\A\(AND\|OR\|XOR\|NOT\)\A"hs=s+1,he=e-1
 
 " ?? =e=, =g=, =l=
 
 " to include .csv files
-syn region gamsInclude start="\$ondelim" end="\$offdelim"
-
+syn region gamsInclude start="^\$ondelim" end="^\$offdelim"
 
 
 " GAMS global variables e.g. %myglobal%  
-syn region gamsInclude start="%" end="%"
+syn region gamsInclude start="%" end="%\|\$"
+
 " when a command line parameter is passed to the gams code the %1 notation can be used
-syn region gamsInclude start="%" end=" "
-"syn region gamsInclude start="\"%" end="%\""
+syn match  gamsInclude           "%\d\+"
+
+
+
+
+" equation declaration and definition regions
+	syn region gamsEqn matchgroup=Delimiter start=/\.\.\s/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsComment,gamsNumber,gamsConditional,gamsRepeat,gamsFunction,gamsMathsOperator,gamsSuffix
+	syn region gamsEqDecl matchgroup=Delimiter start=/^[ \t\.]*equation[ s\n]/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsComment,gamsString
+	syn match gamsEqDeclComment /^[ \t]*[^ \t]*\zs[^;$\/]*/ contained 
+
+" variable declaration region
+	syn region gamsVar matchgroup=Delimiter start=/^[ \t\.]*variable[ s\n]/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsVarComment,gamsComment,gamsString
+	syn match gamsVarComment /^[ \t]*[^ \t]*\zs[^;$\/]*/ contained 
+
+" set region
+	syn region gamsSet matchgroup=Delimiter start=/^[ \t\.]*set[ s\n]/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsSetComment,gamsComment,gamsSetValues,gamsString
+	syn match gamsSetComment /^[ \t]*[^ \t]*\zs[^;$\/]*/ contained 
+	syn region gamsSetValues matchgroup=Delimiter start=/\// matchgroup=Delimiter end=/\// transparent contains=NONE contained
+
+" parameter region
+	syn region gamsParam matchgroup=Delimiter start=/^[ \t\.]*parameter[ s\n]/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsParamValues,gamsComment,gamsString
+"	syn match gamsParamComment /^[ \t]*[^ \t]*\zs[^;$\/]*/ contained 
+	syn region gamsParamValues matchgroup=Delimiter start=/\// matchgroup=Delimiter end=/\// transparent contains=gamsNumber contained
+
+" model definition region
+	syn region gamsModel matchgroup=Delimiter start=/^[ \t\.]*model[ \n]/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsModelValues,gamsComment,gamsString
+	syn region gamsModelValues matchgroup=Delimiter start=/\// matchgroup=Delimiter end=/\// transparent contained
+
+
 
 
 " Define the default highlighting.
@@ -241,18 +346,19 @@ if version >= 508 || !exists("did_gams_syntax_inits")
   HiLink gamsLabel              Label
   HiLink gamsConditional        Conditional
   HiLink gamsRepeat             Repeat
-  HiLink gamsLineNumber Comment
+  HiLink gamsLineNumber         Comment
   HiLink gamsNumber             Number
   HiLink gamsError              Error
-  HiLink gamsStatement  Statement
+  HiLink gamsStatement          Statement
   HiLink gamsString             String
   HiLink gamsComment            Comment
   HiLink gamsSpecial            Special
   HiLink gamsTodo               Todo
   HiLink gamsFunction           Identifier
-  HiLink gamsTypeSpecifier Type
-  HiLink gamsFilenumber gamsTypeSpecifier
-  HiLink gamsInclude           Special 
+  HiLink gamsTypeSpecifier      Type
+  HiLink gamsFilenumber         gamsTypeSpecifier
+  HiLink gamsInclude            Special 
+  HiLink gamsSuffix             Statement 
   hi gamsMathsOperator term=bold cterm=bold gui=bold
 
   delcommand HiLink
