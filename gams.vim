@@ -16,10 +16,8 @@ syn case ignore
 " KEYWORDS
 
 " for model definition and solve 
-" gams statements defined as regions below: set, parameter, model, equation
-syn keyword gamsStatement       Table 
+" gams statements defined as regions below: set, parameter, model, equation, variable, Table
 syn keyword gamsStatement       Solve using
-syn keyword gamsStatement       Variable Variables 
 syn keyword gamsStatement       display 
 syn keyword gamsStatement       option 
 syn keyword gamsStatement       Alias 
@@ -217,16 +215,6 @@ syn match gamsNumber "[-+]inf"
 
 
 
-" GAMS comments (see REGIONS section as well)
-" switch on for end of line comments 
-" syn match   gamsComment         "#.*$"
-
-" TODO and FIXME are special keywords in comments
-syntax keyword gamsTodo contained       TODO FIXME
-syntax match gamsComment       "^\*.*" contains=gamsTodo
-" GAMS comment regions 
-syntax region  gamsComment         start="^\$ontext" end="^\$offtext"
-
 
 " suffixes -- all from Henry
 	syn match gamsSuffix /\.pc/
@@ -302,7 +290,15 @@ syn region gamsInclude start="%" end="%\|\$"
 " when a command line parameter is passed to the gams code the %1 notation can be used
 syn match  gamsInclude           "%\d\+"
 
+" GAMS comments (see REGIONS section as well)
+" switch on for end of line comments 
+" syn match   gamsComment         "#.*$"
 
+" TODO and FIXME are special keywords in comments
+syntax keyword gamsTodo contained       TODO FIXME
+syntax match gamsComment       "^\*.*" contains=gamsTodo 
+" GAMS comment regions 
+syntax region  gamsComment         start="^\$ontext" end="^\$offtext"
 
 
 " equation declaration and definition regions
@@ -317,16 +313,21 @@ syn match  gamsInclude           "%\d\+"
 " set region
 	syn region gamsSet matchgroup=Delimiter start=/^[ \t\.]*set[ s\n]/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsSetComment,gamsComment,gamsSetValues,gamsString
 	syn match gamsSetComment /^[ \t]*[^ \t]*\zs[^;$\/]*/ contained 
-	syn region gamsSetValues matchgroup=Delimiter start=/\// matchgroup=Delimiter end=/\// transparent contains=NONE contained
+	syn region gamsSetValues matchgroup=Delimiter start=/\// matchgroup=Delimiter end=/\// transparent contains=gamsComment,gamsString contained
 
 " parameter region
 	syn region gamsParam matchgroup=Delimiter start=/^[ \t\.]*parameter[ s\n]/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsParamValues,gamsComment,gamsString
 "	syn match gamsParamComment /^[ \t]*[^ \t]*\zs[^;$\/]*/ contained 
 	syn region gamsParamValues matchgroup=Delimiter start=/\// matchgroup=Delimiter end=/\// transparent contains=gamsNumber contained
 
+" table region
+	syn region gamsTable matchgroup=Delimiter start=/^[ \t\.]*table[ s\n]/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsNumber,gamsComment,gamsString
+
 " model definition region
 	syn region gamsModel matchgroup=Delimiter start=/^[ \t\.]*model[ \n]/ matchgroup=Delimiter end=/;/ fold transparent contains=gamsModelValues,gamsComment,gamsString
 	syn region gamsModelValues matchgroup=Delimiter start=/\// matchgroup=Delimiter end=/\// transparent contained
+
+
 
 
 
