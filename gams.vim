@@ -45,7 +45,7 @@ syn match gamsMathsOperator "-\|=\|[:+^/\\]"
 syn match gamsMathsOperator "\A\(AND\|OR\|XOR\|NOT\)\A"hs=s+1,he=e-1
 
 " math and statistical functions
-syntax keyword gamsFunction      ABS ASC sigmoid sum
+syntax keyword gamsFunction      ABS ASC sigmoid sum prod
 syntax keyword gamsFunction      acos acosh asin asinh atan atan2
 syntax keyword gamsFunction      atanh ceil ctime cos cosh exp floor log log10
 syntax keyword gamsFunction      max min precision round sin sinh sqrt tan tanh sqrt
