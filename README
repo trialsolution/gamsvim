@@ -1,7 +1,40 @@
-#description
+SYNTAX HIGHLIGHTING AND LISTING FILE SUPPORT FOR GAMS
+-----------------------------------------------------
+
+
+### Syntax highlighting
+
 syntax highlighting for the GAMS programming language
  
-#install details
+INSTALLATION
 1. put gams.vim in the syntax directory 
 2. associate .gms files with the highlighting by adding the following line to your filetype.vim: 
 au BufNewFile,BufRead *.gms	 setf gams
+
+
+### GAMS listing file inspection
+
+ The main objective is to help reviewing solver output of large models
+ by hiding (folding) large parts of the listing file
+ 
+ (the script builds on Antonio Colombo's f.vim script)
+
+ :call MODLIST()
+ Everything is folded except variables, equation and parameters
+ => you get a quick overview of the model structure and are able
+ to jump to the relevant positions. Then simply unfold the relevant
+ parts.
+
+ :cal MOREX()
+ You can add additional search term that will not be folded.
+ Example: search for a country name then single equations and variables
+ defined for that country remain visible
+
+
+ INSTALLATION
+
+ :so gamslist.vim 
+
+ You can map the functions to a function key in your vimrc file:
+ map <F6> :call MOREX() <CR>
+
